@@ -84,5 +84,3 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.ytod.offline.share
         PRODUCT_NAME: ShareExtension
-        # Needed to open the main app from the share sheet.
-        APPLICATION_EXTENSION_API_ONLY: NO
