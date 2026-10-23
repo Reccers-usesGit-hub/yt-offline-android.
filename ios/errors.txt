@@ -1,0 +1,1 @@
+/Users/runner/work/yt-offline-android./yt-offline-android./ios/App/DownloadsView.swift:50:17: error: overlapping accesses to 'g.videos', but modification requires exclusive access; consider copying to a local variable
