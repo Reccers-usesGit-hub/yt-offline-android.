@@ -84,6 +84,7 @@ import androidx.media3.ui.PlayerView
 import app.ytod.offline.Fmt
 import app.ytod.offline.data.Store
 import app.ytod.offline.data.Video
+import app.ytod.offline.dl.ShareFile
 import kotlinx.coroutines.delay
 import java.io.File
 
@@ -289,8 +290,9 @@ fun WatchScreen(id: String, listId: String?, onBack: () -> Unit, onOpen: (String
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     item { LikeDislike(v) }
+                    item { Pill("Share file", Ic.share, onClick = { ShareFile.share(ctx, v) }) }
                     item {
-                        Pill("Share", Ic.share, onClick = {
+                        Pill("Share link", Ic.share, onClick = {
                             val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${v.id}")
                             ctx.startActivity(Intent.createChooser(send, "Share"))
                         })
@@ -341,7 +343,10 @@ fun WatchScreen(id: String, listId: String?, onBack: () -> Unit, onOpen: (String
                         VideoRow(
                             o, watched = (positions[o.id] ?: 0L).let { p -> if (p > 0 && o.duration > 0) p.toFloat() / o.duration else 0f },
                             index = null, onClick = { onOpen(o.id, null) },
-                            menu = listOf(MenuItem("Remove from downloads", Ic.trash) { Store.remove(listOf(o.id)) }),
+                            menu = listOf(
+                                MenuItem("Share video file", Ic.share) { ShareFile.share(ctx, o) },
+                                MenuItem("Remove from downloads", Ic.trash) { Store.remove(listOf(o.id)) },
+                            ),
                         )
                     }
                 }
@@ -454,6 +459,7 @@ private fun PlaylistPanel(
     onClose: () -> Unit,
 ) {
     val c = LocalYc.current
+    val pctx = LocalContext.current
     var open by remember { mutableStateOf(false) }
     Column(Modifier.padding(12.dp, 8.dp).fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(c.raised)) {
         Row(Modifier.fillMaxWidth().clickable { open = !open }.padding(start = 12.dp, top = 10.dp, bottom = 10.dp, end = 4.dp),
@@ -472,7 +478,10 @@ private fun PlaylistPanel(
                         o, watched = (positions[o.id] ?: 0L).let { p -> if (p > 0 && o.duration > 0) p.toFloat() / o.duration else 0f },
                         index = i + 1, current = o.id == currentId,
                         onClick = { if (o.id != currentId) onOpen(o.id) },
-                        menu = listOf(MenuItem("Remove from downloads", Ic.trash) { Store.remove(listOf(o.id)) }),
+                        menu = listOf(
+                            MenuItem("Share video file", Ic.share) { ShareFile.share(pctx, o) },
+                            MenuItem("Remove from downloads", Ic.trash) { Store.remove(listOf(o.id)) },
+                        ),
                     )
                 }
             }

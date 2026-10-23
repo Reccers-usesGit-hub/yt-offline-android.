@@ -57,6 +57,8 @@ import app.ytod.offline.data.Video
 import app.ytod.offline.dl.DlJob
 import app.ytod.offline.dl.DownloadManager
 import app.ytod.offline.dl.JobState
+import app.ytod.offline.dl.ShareFile
+import androidx.compose.ui.platform.LocalContext
 import java.io.File
 
 /** A playlist shown as one stacked card in "All". */
@@ -73,6 +75,7 @@ class Confirm(val title: String, val lines: List<String>, val ok: String, val ac
 @Composable
 fun DownloadsScreen(onOpen: (String, String?) -> Unit, onSettings: () -> Unit) {
     val c = LocalYc.current
+    val ctx = LocalContext.current
     val videos by Store.videos.collectAsState()
     val jobs by DownloadManager.jobs.collectAsState()
     val positions by Store.positions.collectAsState()
@@ -180,6 +183,7 @@ fun DownloadsScreen(onOpen: (String, String?) -> Unit, onSettings: () -> Unit) {
                             v, watched(v), index = playlistIndex(v, g.id) + 1,
                             onClick = { onOpen(v.id, g.id) },
                             menu = listOf(
+                                MenuItem("Share video file", Ic.share) { ShareFile.share(ctx, v) },
                                 MenuItem("Remove from this playlist", Ic.playlists) { Store.removeFromPlaylist(v.id, g.id) },
                                 MenuItem("Remove from downloads", Ic.trash) { removeVideo(v) },
                             ),
@@ -251,7 +255,11 @@ fun VideoCard(v: Video, watched: Float, onClick: () -> Unit, onRemove: () -> Uni
                     .filter { it.isNotEmpty() }.joinToString(" · "),
                     color = c.text2, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 2.dp))
             }
-            DotsMenu(listOf(MenuItem("Remove from downloads", Ic.trash, onRemove)))
+            val ctx = LocalContext.current
+            DotsMenu(listOf(
+                MenuItem("Share video file", Ic.share) { ShareFile.share(ctx, v) },
+                MenuItem("Remove from downloads", Ic.trash, onRemove),
+            ))
         }
     }
 }
