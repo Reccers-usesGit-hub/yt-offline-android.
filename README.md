@@ -26,3 +26,9 @@ uninstalling the app deletes them.
 GitHub Actions builds a signed APK on every push to `main`, using the newest
 NewPipeExtractor release (the library that reads YouTube). If downloads stop working after a
 YouTube change, re-running the "Build APK" workflow usually picks up the fix.
+
+
+
+
+
+this entire project is made with ai hahahahhhahhahahahha
