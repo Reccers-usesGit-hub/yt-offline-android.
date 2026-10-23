@@ -47,7 +47,8 @@ struct DownloadsView: View {
         return map.values
             .map { g in
                 var g = g
-                g.videos.sort { index($0, in: g.id) < index($1, in: g.id) }
+                let gid = g.id
+                g.videos.sort { index($0, in: gid) < index($1, in: gid) }
                 return g
             }
             .sorted { $0.latest > $1.latest }

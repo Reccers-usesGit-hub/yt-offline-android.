@@ -61,7 +61,7 @@ jobs:
           for l in $(head -10 errors.txt | tr ' ' '_'); do echo "::error::${l//_/ }"; done
           git config user.name "build bot"; git config user.email "bot@users.noreply.github.com"
           git checkout --orphan build-logs
-          git rm -rfq --cached . >/dev/null
+          git rm -rfq --cached :/ >/dev/null
           git add -f errors.txt tail.txt
           git commit -qm "iOS build ${{ github.run_number }} log"
           git push -fq origin build-logs
