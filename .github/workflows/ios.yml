@@ -52,12 +52,19 @@ jobs:
             build 2>&1 | tee build.log | grep -E "error:|warning: .*(deprecated|unavailable)|BUILD" || true
           grep -q "BUILD SUCCEEDED" build.log
 
-      - name: Upload build log on failure
+      - name: Save build errors to the build-logs branch
         if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: ios/build.log
+        working-directory: ios
+        run: |
+          grep -E "error:|warning: unable|fatal" build.log | sort -u | head -200 > errors.txt || true
+          tail -300 build.log > tail.txt
+          for l in $(head -10 errors.txt | tr ' ' '_'); do echo "::error::${l//_/ }"; done
+          git config user.name "build bot"; git config user.email "bot@users.noreply.github.com"
+          git checkout --orphan build-logs
+          git rm -rfq --cached . >/dev/null
+          git add -f errors.txt tail.txt
+          git commit -qm "iOS build ${{ github.run_number }} log"
+          git push -fq origin build-logs
 
       - name: Make the .ipa
         working-directory: ios
